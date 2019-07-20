@@ -40,10 +40,10 @@ public class Main {
         Firefighter bob = new Firefighter("Bob", lock);
         Firefighter peter = new Firefighter("Peter", lock);
 
-
         bob.start();
         peter.start();
 
+        // waiting until all firefighters will be ready
         boolean stop = false;
         while (!stop) {
             if (Main.counterOfWaitingThreads.get() < 2) {
