@@ -1,34 +1,26 @@
 package main.java.filesForTask2;
 
-import main.java.Main;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 
 public class Firefighter extends Thread {
-    private final Object lock;
     private String name;
-    private boolean stop = false;
+    private CyclicBarrier cyclicBarrier;
 
-    public Firefighter(String name, Object lock) {
+    public Firefighter(String name, CyclicBarrier cyclicBarrier) {
         this.name = name;
-        this.lock = lock;
+        this.cyclicBarrier = cyclicBarrier;
     }
 
     @Override
     public void run() {
-        synchronized (lock) {
-            System.out.println("Fireman " + this.name + " is waiting in " + Thread.currentThread().getName());
-            Main.increaseCounterOfWaitingThreads();
-            while (!this.stop) {
-                try {
-                    lock.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            System.out.println("Fireman " + name + " is going to the fire call in " + Thread.currentThread().getName());
+        System.out.println("Fireman " + this.name + " is waiting in " + Thread.currentThread().getName());
+        try {
+            cyclicBarrier.await();
+        } catch (InterruptedException | BrokenBarrierException e) {
+            e.printStackTrace();
         }
-    }
+        System.out.println("Fireman " + name + " is going to the fire call in " + Thread.currentThread().getName());
 
-    public void setStop(boolean stop) {
-        this.stop = stop;
     }
 }
